@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="newTaskTitle">Añadir titulo de la tarea</string>
+    <string name="newTaskDescription">Añadir descropcion de la tarea</string>
+    <string name="btn_agregarTarea">Agregar tarea</string>
+</resources>
