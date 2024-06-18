@@ -9,10 +9,12 @@ import com.example.myapplication.data.Task
 import com.example.myapplication.data.TaskList
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.databinding.DialogTaskBinding
+import com.example.myapplication.viewModel.TaskListViewModel
 
  class MainActivity : AppCompatActivity() {
      private lateinit var binding: ActivityMainBinding
      private lateinit var dialogTaskBinding: DialogTaskBinding
+     private lateinit var taskListViewModel: TaskListViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,11 +24,15 @@ import com.example.myapplication.databinding.DialogTaskBinding
         alertDialogBuilder.setView(dialogTaskBinding.root)
         val alertDialog = alertDialogBuilder.create()
 
+        taskListViewModel = TaskListViewModel()
+        taskListViewModel.taskList.observe(this) { _ ->
+            initRecycler(TaskList.listOfTasks)
+
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(binding.main)
-        initRecycler(TaskList.listOfTasks)
         setListener(alertDialog)
-
     }
 
      private fun initRecycler(taskList: List<Task>){
@@ -46,8 +52,8 @@ import com.example.myapplication.databinding.DialogTaskBinding
         dialogTaskBinding.fabPlus.setOnClickListener{
             val title = addTitleTask()
             val description =  addDescriptionTask()
-            if (!title.isNullOrEmpty() && !description.isNullOrEmpty()){
-                saveTask(title, description)
+            if (title.isNotEmpty() && description.isNotEmpty()){
+                taskListViewModel.addTask(title, description)
                 alertDialog.dismiss()
             }
         }
@@ -56,11 +62,6 @@ import com.example.myapplication.databinding.DialogTaskBinding
      private fun clearEditText() {
          dialogTaskBinding.etNewTaskTitle.text.clear()
          dialogTaskBinding.etNewTaskDescription.text.clear()
-     }
-
-     private fun saveTask(title:String, description:String){
-         val task = Task(title, description)
-         TaskList.addTask(task)
      }
 
      private fun addDescriptionTask(): String {
